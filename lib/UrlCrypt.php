@@ -1,19 +1,19 @@
 <?php
 
 /**
- * URLcrypt
+ * URLCrypt
  *
  * PHP library to securely encode and decode short pieces of arbitrary binary data in URLs.
  *
- * (c) Aaron Francis
+ * (c) Guillermo Gonzalez
  *
  * For the full copyright and license information, please view the COPYING
  * file that was distributed with this source code.
  */
 
-namespace Urlcrypt;
+namespace UrlCrypt;
 
-class Urlcrypt
+class UrlCrypt
 {
     public static $table = "1bcd2fgh3jklmn4pqrstAvwxyz567890";
     public static $key = "";

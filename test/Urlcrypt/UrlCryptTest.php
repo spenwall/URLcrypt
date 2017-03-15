@@ -1,8 +1,8 @@
 <?php
 
-namespace Urlcrypt;
+namespace UrlCrypt;
 
-class UrlcryptTest extends \PHPUnit_Framework_TestCase
+class UrlCryptTest extends \PHPUnit_Framework_TestCase
 {
     public function testArbitraryEncode()
     {
