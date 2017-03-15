@@ -19,6 +19,6 @@
         "phpunit/phpunit": "^5.3"
     },
     "autoload": {
-        "psr-4": {"Urlcrypt\\": "lib/"}
+        "psr-4": {"UrlCrypt\\": "lib/"}
     }
 }

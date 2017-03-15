@@ -16,14 +16,13 @@ namespace UrlCrypt;
 class UrlCrypt
 {
     public static $table = "1bcd2fgh3jklmn4pqrstAvwxyz567890";
-    public static $key = "";
     protected static $cipher = MCRYPT_RIJNDAEL_128;
     protected static $mode = MCRYPT_MODE_CBC;
 
-    public static function encode($str)
+    public static function encode($string)
     {
-        $n = strlen($str) * 8 / 5;
-        $arr = str_split($str, 1);
+        $n = strlen($string) * 8 / 5;
+        $arr = str_split($string, 1);
 
         $m = "";
         foreach ($arr as $c) {
@@ -42,10 +41,10 @@ class UrlCrypt
         return $newstr;
     }
 
-    public static function decode($str)
+    public static function decode($string)
     {
-        $n = strlen($str) * 5 / 8;
-        $arr = str_split($str, 1);
+        $n = strlen($string) * 5 / 8;
+        $arr = str_split($string, 1);
 
         $m = "";
         foreach ($arr as $c) {
@@ -60,45 +59,50 @@ class UrlCrypt
         return $oldstr;
     }
 
-    public static function encrypt($str)
+    /**
+     * @param string $string
+     * @param string $key
+     * @return string
+     * @throws \Exception
+     */
+    public static function encrypt($string, $key)
     {
-        if (self::$key === "") {
+        if (is_null($key) || $key == "") {
             throw new \Exception('No key provided.');
         }
 
-        $key = pack('H*', self::$key);
+        $key = pack('H*', $key);
 
         $iv_size = mcrypt_get_iv_size(self::$cipher, self::$mode);
 
         $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $str = utf8_encode($str);
+        $string = utf8_encode($string);
 
-        $ciphertext = mcrypt_encrypt(self::$cipher, $key, $str, self::$mode, $iv);
+        $ciphertext = mcrypt_encrypt(self::$cipher, $key, $string, self::$mode, $iv);
 
         $ciphertext = $iv . $ciphertext;
 
         return self::encode($ciphertext);
     }
 
-    public static function decrypt($str)
+    public static function decrypt($string, $key)
     {
-        if (self::$key === "") {
+        if ($key === "") {
             throw new \Exception('No key provided.');
         }
 
-        $key = pack('H*', self::$key);
+        $key = pack('H*', $key);
 
-        $str = self::decode($str);
+        $string = self::decode($string);
 
         $iv_size = mcrypt_get_iv_size(self::$cipher, self::$mode);
-        $iv_dec = substr($str, 0, $iv_size);
+        $iv_dec = substr($string, 0, $iv_size);
 
-        $str = substr($str, $iv_size);
+        $string = substr($string, $iv_size);
 
-        $str = mcrypt_decrypt(self::$cipher, $key, $str, self::$mode, $iv_dec);
+        $string = mcrypt_decrypt(self::$cipher, $key, $string, self::$mode, $iv_dec);
 
-        // http://jonathonhill.net/2013-04-05/write-tests-you-might-learn-somethin/
-        return rtrim($str, "\0");
+        return rtrim($string, "\0");
     }
 }
 
