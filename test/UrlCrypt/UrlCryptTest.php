@@ -26,9 +26,8 @@ class UrlCryptTest extends \PHPUnit_Framework_TestCase
                 for ($z = 0; $z < $i; $z++) {
                     $string .= chr(rand(0, 255));
                 }
-                $decodeString = $this->encodeAndDecode($string);
 
-                $this->assertEquals($string, $decodeString);
+                $this->assertEquals($string, $this->encodeAndDecode($string));
             }
         }
     }
@@ -38,9 +37,7 @@ class UrlCryptTest extends \PHPUnit_Framework_TestCase
      */
     public function emptyString()
     {
-        $decodeString = $this->encodeAndDecode('');
-
-        $this->assertEmpty($decodeString);
+        $this->assertEmpty($this->encodeAndDecode(''));
     }
 
     /**
@@ -48,7 +45,7 @@ class UrlCryptTest extends \PHPUnit_Framework_TestCase
      */
     public function definedEncode()
     {
-        $this->assertEquals('mnAhk6tlp2qg2yldn8xcc', $this->urlCrypt->encode('chunky bacon!'));
+        $this->assertEquals('3f5h2ylqmfwg9', $this->urlCrypt->encode('Atrapalo'));
     }
 
     /**
@@ -56,7 +53,7 @@ class UrlCryptTest extends \PHPUnit_Framework_TestCase
      */
     public function definedDecode()
     {
-        $this->assertEquals('chunky bacon!', $this->urlCrypt->decode('mnAhk6tlp2qg2yldn8xcc'));
+        $this->assertEquals('Atrapalo', $this->urlCrypt->decode('3f5h2ylqmfwg9'));
     }
 
     /**
@@ -85,9 +82,8 @@ class UrlCryptTest extends \PHPUnit_Framework_TestCase
         $string = 'Atrapalo';
         $key = 'bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3';
         $encrypted = $this->urlCrypt->encrypt($string, $key);
-        $decrypted = $this->urlCrypt->decrypt($encrypted, $key);
 
-        $this->assertEquals($string, $decrypted);
+        $this->assertEquals($string, $this->urlCrypt->decrypt($encrypted, $key));
     }
 
     /**
@@ -96,14 +92,12 @@ class UrlCryptTest extends \PHPUnit_Framework_TestCase
     public function failEncryptionWhitDifferentKeys()
     {
         $string = 'Atrapalo';
-
         $key = 'bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3';
+        $key2 = 'c55abe029fdebae5e1d417e2ffb2a00a3bcb04b7e103a0cd8b54763051cef08b';
+
         $encrypted = $this->urlCrypt->encrypt($string, $key);
 
-        $key2 = 'c55abe029fdebae5e1d417e2ffb2a00a3bcb04b7e103a0cd8b54763051cef08b';
-        $decrypted = $this->urlCrypt->decrypt($encrypted, $key2);
-
-        $this->assertNotEquals($string, $decrypted);
+        $this->assertNotEquals($string, $this->urlCrypt->decrypt($encrypted, $key2));
     }
 
     /**
