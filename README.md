@@ -51,7 +51,7 @@ use Atrapalo\UrlCrypt;
 $urlCrypt = new UrlCrypt();
 
 // encoding without encryption. (don't use for anything sensitive)
-$encoded = $urlCrypt->encode('Atrapalo');		// --> "3f5h2ylqmfwg9"
+$encoded = $urlCrypt->encode('Atrapalo');	// --> "3f5h2ylqmfwg9"
 $decoded = $urlCrypt->decode('3f5h2ylqmfwg9');	// --> "Atrapalo"
 
 // encrypting and encoding
