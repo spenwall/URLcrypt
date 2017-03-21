@@ -3,8 +3,9 @@
 namespace Test\Atrapalo\UrlCrypt;
 
 use Atrapalo\UrlCrypt\UrlCrypt;
+use PHPUnit\Framework\TestCase;
 
-class UrlCryptTest extends \PHPUnit_Framework_TestCase
+class UrlCryptTest extends TestCase
 {
     /** @var UrlCrypt */
     private $urlCrypt;
@@ -76,14 +77,42 @@ class UrlCryptTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider encryptData
+     * @param $string
+     * @param $key
      */
-    public function encryption()
+    public function encryption($string, $key)
     {
-        $string = 'Atrapalo';
-        $key = 'bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3';
         $encrypted = $this->urlCrypt->encrypt($string, $key);
 
         $this->assertEquals($string, $this->urlCrypt->decrypt($encrypted, $key));
+    }
+
+    /**
+     * @return array
+     */
+    public function encryptData()
+    {
+        return [
+            'Base key' => ['Atrapalo', 'bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3'],
+            'Medium key' => ['Atrapalo', 'bcb04b7e103a0cd8b5476305'],
+            'UTF8 chars key' => ['Atrapalo', 'á#=()öñ*+^éíáá=()öñ*+^éá'],
+            'Custom string key' => ['Atrapalo', 'AtrapaloKey'],
+            'UTF8 chars and base key' => ['ȀȁȂȃȄȇȈȉȊȋȌȍȎȏȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟ', 'AtrapaloKey'],
+        ];
+    }
+
+    /**
+     * @test
+     */
+    public function encryptionCustomTable()
+    {
+        $string = 'Atrapalo';
+        $key = 'bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3';
+        $urlCrypt = new UrlCrypt('pqrstAvwxyz5678901bcd2fgh3jklmn4');
+        $encrypted = $urlCrypt->encrypt($string, $key);
+
+        $this->assertEquals($string, $urlCrypt->decrypt($encrypted, $key));
     }
 
     /**
