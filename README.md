@@ -1,6 +1,8 @@
 # URLCrypt
 
 [![Build Status](https://travis-ci.org/atrapalo/URLcrypt.svg?branch=master)](https://travis-ci.org/atrapalo/URLcrypt)
+[![Code Coverage](https://scrutinizer-ci.com/g/atrapalo/URLcrypt/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/atrapalo/URLcrypt/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/atrapalo/URLcrypt/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/atrapalo/URLcrypt/?branch=master)
 
 Ever wanted to securely transmit (not too long) pieces of arbitrary binary data
 in a URL? **URLCrypt** makes it easy.
