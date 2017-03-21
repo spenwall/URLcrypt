@@ -25,8 +25,6 @@ characters in length, as URLs longer than that will not work in some browsers
 and with some (proxy) servers. This limits the amount of data you should store
 with URLCrypt.
 
-**WORD OF WARNING: THERE IS NO GUARANTEE WHATSOEVER THAT THIS CLASS IS ACTUALLY SECURE AND WORKS. USE AT YOUR OWN RISK.**
-
 Patches are welcome; please include tests!
 
 ## Requirements
