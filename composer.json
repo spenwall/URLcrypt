@@ -28,5 +28,8 @@
         "psr-4": {
             "Tests\\Atrapalo\\": "tests/"
         }
+    },
+    "config": {
+        "bin-dir": "bin/"
     }
 }
