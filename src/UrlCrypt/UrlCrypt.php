@@ -19,29 +19,23 @@ namespace Atrapalo\UrlCrypt;
  */
 class UrlCrypt
 {
-    /** @var string */
     public $table = "1bcd2fgh3jklmn4pqrstAvwxyz567890";
-    /** @var int */
     private $ivSize = 16;
-    /** @var string */
     private $opensslMode = 'AES-256-OFB';
 
-    /**
-     * UrlCrypt constructor.
-     * @param string $table
-     */
-    public function __construct($table = null)
+    public function __construct(string $table = null)
     {
         if (!is_null($table) && $table != '') {
             $this->table = $table;
         }
     }
 
-    /**
-     * @param string $string
-     * @return string
-     */
-    public function encode($string)
+    public static function getInstance(string $table = null): UrlCrypt
+    {
+        return new self($table);
+    }
+
+    public function encode(string $string): string
     {
         $table = str_split($this->table, 1);
         $size = strlen($string) * 8 / 5;
@@ -62,11 +56,7 @@ class UrlCrypt
         return $encodeString;
     }
 
-    /**
-     * @param string $string
-     * @return string
-     */
-    public function decode($string)
+    public function decode(string $string): string
     {
         $table = str_split($this->table, 1);
         $size = strlen($string) * 5 / 8;
@@ -85,13 +75,7 @@ class UrlCrypt
         return $originalString;
     }
 
-    /**
-     * @param string $string
-     * @param string $key
-     * @return string
-     * @throws \Exception
-     */
-    public function encrypt($string, $key)
+    public function encrypt(string $string, string $key): string
     {
         $key = $this->prepareKey($key);
         $iv = openssl_random_pseudo_bytes($this->ivSize);
@@ -101,13 +85,7 @@ class UrlCrypt
         return $this->encode($cipherText);
     }
 
-    /**
-     * @param string $string
-     * @param string $key
-     * @return string
-     * @throws \Exception
-     */
-    public function decrypt($string, $key)
+    public function decrypt(string $string, string $key): string
     {
         $key = $this->prepareKey($key);
         $string = $this->decode($string);
@@ -119,12 +97,7 @@ class UrlCrypt
         return $string;
     }
 
-    /**
-     * @param $key
-     * @return string
-     * @throws \Exception
-     */
-    private function prepareKey($key)
+    private function prepareKey(string $key): string
     {
         if (is_null($key) || $key == "") {
             throw new \Exception('No key provided.');
@@ -139,11 +112,7 @@ class UrlCrypt
         }
     }
 
-    /**
-     * @param $string
-     * @return bool
-     */
-    private function isHexString($string)
+    private function isHexString(string $string): string
     {
         return (preg_match('/^[0-9a-f]+$/i', $string) === 1);
     }

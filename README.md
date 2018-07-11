@@ -1,5 +1,7 @@
 # URLCrypt
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/atrapalo/urlcrypt.svg)](https://packagist.org/packages/atrapalo/urlcrypt)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.0-8892bf.svg)](http://php.net/)
 [![Build Status](https://travis-ci.org/atrapalo/URLcrypt.svg?branch=master)](https://travis-ci.org/atrapalo/URLcrypt)
 [![Code Coverage](https://scrutinizer-ci.com/g/atrapalo/URLcrypt/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/atrapalo/URLcrypt/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/atrapalo/URLcrypt/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/atrapalo/URLcrypt/?branch=master)
@@ -29,7 +31,7 @@ Patches are welcome; please include tests!
 
 ## Requirements
 
-URLCrypt requires PHP >= 5.5.9 as well as the openssl PHP extension.
+URLCrypt requires PHP >= 7.0 as well as the openssl PHP extension.
 
 ## Installation
 
@@ -38,7 +40,7 @@ You can install URLCrypt via Composer with `composer require atrapalo/urlcrypt` 
 ```json
 {
 	"require": {
-		"atrapalo/urlcrypt": "^1.0"
+		"atrapalo/urlcrypt": "^2.0"
 	}
 }
 ```
@@ -48,7 +50,7 @@ You can install URLCrypt via Composer with `composer require atrapalo/urlcrypt` 
 ```php
 use Atrapalo\UrlCrypt;
 
-$urlCrypt = new UrlCrypt();
+$urlCrypt = new UrlCrypt(); // Or $urlCrypt = UrlCrypt::getInstance()
 
 // encoding without encryption. (don't use for anything sensitive)
 $encoded = $urlCrypt->encode('Atrapalo');	// --> "3f5h2ylqmfwg9"

@@ -17,6 +17,14 @@ class UrlCryptTest extends TestCase
 
     /**
      * @test
+     */
+    public function instance()
+    {
+        $this->assertInstanceOf(UrlCrypt::class, UrlCrypt::getInstance());
+    }
+
+    /**
+     * @test
      * Test 300 strings of random characters for each length between 1 and 30.
      */
     public function arbitraryEncode()
@@ -61,15 +69,6 @@ class UrlCryptTest extends TestCase
      * @test
      * @expectedException \Exception
      */
-    public function nullKey()
-    {
-        $this->urlCrypt->encrypt('Atrapalo', null);
-    }
-
-    /**
-     * @test
-     * @expectedException \Exception
-     */
     public function emptyKey()
     {
         $this->urlCrypt->encrypt('Atrapalo', '');
@@ -86,6 +85,21 @@ class UrlCryptTest extends TestCase
         $encrypted = $this->urlCrypt->encrypt($string, $key);
 
         $this->assertEquals($string, $this->urlCrypt->decrypt($encrypted, $key));
+    }
+
+    /**
+     * @test
+     * @dataProvider encryptData
+     * @param $string
+     * @param $key
+     */
+    public function encryptionWithInstance($string, $key)
+    {
+        $urlCrypt = UrlCrypt::getInstance();
+
+        $encrypted = $urlCrypt->encrypt($string, $key);
+
+        $this->assertEquals($string, $urlCrypt->decrypt($encrypted, $key));
     }
 
     /**
@@ -110,6 +124,19 @@ class UrlCryptTest extends TestCase
         $string = 'Atrapalo';
         $key = 'bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3';
         $urlCrypt = new UrlCrypt('pqrstAvwxyz5678901bcd2fgh3jklmn4');
+        $encrypted = $urlCrypt->encrypt($string, $key);
+
+        $this->assertEquals($string, $urlCrypt->decrypt($encrypted, $key));
+    }
+
+    /**
+     * @test
+     */
+    public function encryptionCustomTableWithInstance()
+    {
+        $string = 'Atrapalo';
+        $key = 'bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3';
+        $urlCrypt = UrlCrypt::getInstance('pqrstAvwxyz5678901bcd2fgh3jklmn4');
         $encrypted = $urlCrypt->encrypt($string, $key);
 
         $this->assertEquals($string, $urlCrypt->decrypt($encrypted, $key));

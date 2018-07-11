@@ -14,13 +14,12 @@
     "support": {
         "email": "dt_hoteles@atrapalo.com"
     },
-    "minimum-stability": "dev",
     "require": {
-        "php": "^5.5.9|~7.0",
+        "php": "^7.0",
         "ext-openssl": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.3"
+        "phpunit/phpunit": "^6.5"
     },
     "autoload": {
         "psr-4": {"Atrapalo\\": "src/"}
@@ -29,8 +28,5 @@
         "psr-4": {
             "Tests\\Atrapalo\\": "tests/"
         }
-    },
-    "config": {
-        "bin-dir": "bin/"
     }
 }
