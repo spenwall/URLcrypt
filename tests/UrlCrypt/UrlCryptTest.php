@@ -76,6 +76,19 @@ class UrlCryptTest extends TestCase
 
     /**
      * @test
+     */
+    public function retroCompatibilityWithMcrypt()
+    {
+        $data = $this->urlCrypt->decrypt(
+            'f5bA4z5vbd866x6zc91s90gfccvx6mlkkwjdrjlk1t6w7c8mgz34pm0jryhzqwntA0blxjv9zj5pwhArgvvwgng2pbtwgqt717tsh51',
+            substr('42a845f31add7dc60abf8ad04fc2eb76', 0, 16)
+        );
+
+        $this->assertEquals('131,33398885611#EUR#24#HD#2_200_0_0_0_0_0#O#', $data);
+    }
+
+    /**
+     * @test
      * @dataProvider encryptData
      * @param $string
      * @param $key
