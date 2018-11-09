@@ -19,29 +19,24 @@ namespace Atrapalo\UrlCrypt;
  */
 class UrlCrypt
 {
-    /** @var string */
     public $table = "1bcd2fgh3jklmn4pqrstAvwxyz567890";
-    /** @var int */
-    private $ivSize = 16;
-    /** @var string */
-    private $opensslMode = 'AES-256-OFB';
+    private $ivSize;
+    private $cipher = 'AES-128-CBC';
 
-    /**
-     * UrlCrypt constructor.
-     * @param string $table
-     */
-    public function __construct($table = null)
+    public function __construct(string $table = null)
     {
+        $this->ivSize = openssl_cipher_iv_length($this->cipher);
         if (!is_null($table) && $table != '') {
             $this->table = $table;
         }
     }
 
-    /**
-     * @param string $string
-     * @return string
-     */
-    public function encode($string)
+    public static function getInstance(string $table = null): UrlCrypt
+    {
+        return new self($table);
+    }
+
+    public function encode(string $string): string
     {
         $table = str_split($this->table, 1);
         $size = strlen($string) * 8 / 5;
@@ -62,11 +57,7 @@ class UrlCrypt
         return $encodeString;
     }
 
-    /**
-     * @param string $string
-     * @return string
-     */
-    public function decode($string)
+    public function decode(string $string): string
     {
         $table = str_split($this->table, 1);
         $size = strlen($string) * 5 / 8;
@@ -85,46 +76,74 @@ class UrlCrypt
         return $originalString;
     }
 
-    /**
-     * @param string $string
-     * @param string $key
-     * @return string
-     * @throws \Exception
-     */
-    public function encrypt($string, $key)
+    public function encrypt(string $string, string $key): string
     {
         $key = $this->prepareKey($key);
         $iv = openssl_random_pseudo_bytes($this->ivSize);
-        $cipherText = openssl_encrypt($string, $this->opensslMode, $key, 0, $iv);
-        $cipherText = $iv . $cipherText;
+        $cipherText = openssl_encrypt($string, $this->cipher, $key, OPENSSL_RAW_DATA, $iv);
 
-        return $this->encode($cipherText);
+        if(false === $cipherText) {
+            $this->throwOpensslError();
+        }
+
+        return $this->encode(base64_encode($cipherText).'::'.base64_encode($iv));
     }
 
-    /**
-     * @param string $string
-     * @param string $key
-     * @return string
-     * @throws \Exception
-     */
-    public function decrypt($string, $key)
+    public function decrypt(string $string, string $key): string
     {
-        $key = $this->prepareKey($key);
         $string = $this->decode($string);
 
-        $ivDec = substr($string, 0, $this->ivSize);
-        $string = substr($string, $this->ivSize);
-        $string = openssl_decrypt($string, $this->opensslMode, $key, 0, $ivDec);
+        if (strpos($string, '::') === false) {
+            return $this->legacyDecrypt($string, $key);
+        }
+
+        $key = $this->prepareKey($key);
+        list($string, $iv) = explode('::', $string);
+        $string = openssl_decrypt(base64_decode($string), $this->cipher, $key, OPENSSL_RAW_DATA, base64_decode($iv));
 
         return $string;
     }
 
-    /**
-     * @param $key
-     * @return string
-     * @throws \Exception
-     */
-    private function prepareKey($key)
+    private function prepareKey(string $key): string
+    {
+        if (is_null($key) || $key == "") {
+            throw new \Exception('No key provided.');
+        }
+
+        return md5($key, true);
+    }
+
+    private function isHexString(string $string): string
+    {
+        return (preg_match('/^[0-9a-f]+$/i', $string) === 1);
+    }
+
+    private function throwOpensslError()
+    {
+        $message = '';
+        while ($msg = openssl_error_string()) {
+            $message .= "{$msg}. ";
+        }
+
+        throw new \RuntimeException(trim($message));
+    }
+
+    private function legacyDecrypt(string $string, string $key): string
+    {
+        $key = $this->legacyPrepareKey($key);
+        $iv = substr($string, 0, $this->ivSize);
+        $string = substr($string, $this->ivSize);
+        $string = openssl_decrypt($string, $this->cipher, $key, OPENSSL_RAW_DATA|OPENSSL_ZERO_PADDING, $iv);
+
+        preg_match_all('#([\\000]+)$#', $string, $matches);
+        if (isset($matches[1][0]) && mb_strlen($matches[1][0], '8bit') > 1) {
+            $string = rtrim($string, "\0");
+        }
+
+        return $string;
+    }
+
+    private function legacyPrepareKey(string $key): string
     {
         if (is_null($key) || $key == "") {
             throw new \Exception('No key provided.');
@@ -137,14 +156,5 @@ class UrlCrypt
         } else {
             return md5($key);
         }
-    }
-
-    /**
-     * @param $string
-     * @return bool
-     */
-    private function isHexString($string)
-    {
-        return (preg_match('/^[0-9a-f]+$/i', $string) === 1);
     }
 }
