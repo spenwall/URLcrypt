@@ -9,8 +9,8 @@ class UrlCryptTest extends TestCase
 {
     /** @var UrlCrypt */
     private $urlCrypt;
-    
-    protected function setUp()
+
+    protected function setUp() : void
     {
         $this->urlCrypt = new UrlCrypt();
     }
@@ -71,6 +71,7 @@ class UrlCryptTest extends TestCase
      */
     public function emptyKey()
     {
+        $this->expectException(\Exception::class);
         $this->urlCrypt->encrypt('Atrapalo', '');
     }
 
